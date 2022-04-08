@@ -192,14 +192,23 @@ $(".card .list-group").sortable({
   scroll: false,
   tolerance: 'pointer',
   helper: "clone",
-  active: function(event) {
+  activate: function(event) {
+    $(this).addClass("dropover"),
+    $(".bottom-trash").addClass("bottom-trash-drag")
     console.log("deactive", this);
   },
+  deactivate: function(event) {
+    $(this).removeClass("dropover"),
+    $(".bottom-trash").removeClass("bottom-trash-drag")
+    
+  },
   over: function(event) {
+    $(event.target).addClass("dropover-active")
     console.log('over', event.target)
   },
   out: function(event) {
     console.log("out", event.target) 
+    $(event.target).removeClass("dropover-active");
   },
   update: function(event) {
     var tempArr = []
@@ -233,12 +242,15 @@ $("#trash").droppable({
   tolerance: "touch",
   drop: function(event, ui) {
     console.log("drop")
+    $(".bottom-trash").removeClass('bototm-trash-active')
     ui.draggable.remove();
   },
   over:function(event, ui) {
+    $(".bottom-trash").addClass("bottom-trash-active")
     console.log("over")
   },
   out: function(event, ui) {
+    $(".bottom-trash").removeClass('bottom-trash-active')
     console.log("out")
   }
 })
@@ -265,8 +277,13 @@ var auditTask = function(taskEl) {
   }
   //this should print out an object for the value of the date variable, but at 5:00pm of the date
   console.log(time)
+  console.log(taskEl)
 }
-
+setInterval(function() {
+  $('.card .list-group-item').each(function(index, el) {
+    auditTask(el);
+  });
+}, (1000 * 60) * 30)
 
 
 loadTasks();
